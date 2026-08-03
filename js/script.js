@@ -1,15 +1,16 @@
+
 //selected elements++++++++++++_______((_)))))))?????????////////////////////////////////////////////////////
 const canvas = document.querySelector('canvas')
 
 //game setup ++++++++++++_______((())()()(_(_(__(__(_()(_)))))))?????????////////////////////////////////////////////////////
 const context = canvas.getContext('2d')
 const gravity = 1.5
-
-
+let platforms 
 
 //tracking how far the player is moved how far the platform has scrolled on the screen
 let scrollOffset = 0
-
+const platformImage = new Image()
+platformImage.src = './images/platform.png'
 
 
 //defining the keys i want to monitor
@@ -24,8 +25,8 @@ const keys = {
        }
 }
 //make the canvas squared
-canvas.width = innerWidth
-canvas.height = innerHeight
+canvas.width = 1024
+canvas.height = 576
 //make the canvas squared
 
 //creating the player inside the canvas
@@ -75,15 +76,14 @@ class Platform{
                      //x
                      //y
               }
-
-              this.width = 200
-              this.height = 20
+              this.image = platformImage
+              this.width = this.image.width
+              this.height = this.image.height
        }
 
 
        draw(){
-              context.fillStyle = 'blue'
-              context.fillRect(this.position.x,this.position.y,this.width,this.height)
+              context.drawImage(this.image, this.position.x, this.position.y, this.width, this.height)
        }
 }
 //creating the platform class
@@ -97,16 +97,16 @@ class Platform{
 //implementing and using the class player
 
 const player = new Player()
-const platforms = [new Platform({x:200, y:100}),new Platform({x:500, y:200}),new Platform({x:700, y:300}),new Platform({x:800, y:50}),new Platform({x:1000, y:200}),new Platform({x:1300, y:500}),new Platform({x:1500, y:300}),new Platform({x:1800, y:100}),new Platform({x:1900, y:350}),new Platform({x:1950, y:100}),new Platform({x:2000, y:300})]
+
 
 //making an animation loop to get the player moving
 function animate(){
        requestAnimationFrame(animate) //changing the players properties over time
        context.clearRect(0,0,canvas.width,canvas.height) // clear the canvas but allow us to draw after
-       player.update()
        platforms.forEach((platform)=>{
               platform.draw()
        })
+       player.update()
 
        if((keys.right.pressed ) && (player.position.x <= 400)){
               player.velocity.x = 5
@@ -129,7 +129,7 @@ function animate(){
        }
 
 
-       if(scrollOffset <= 2100){
+       if(scrollOffset <= 6500){
               console.log('you win')
        }
 
@@ -147,8 +147,26 @@ function animate(){
 
 }
 
-animate()
+platformImage.onload = () => {
+           platforms = [
+              new Platform({x:0,  y:476}),
+              new Platform({x:930,  y:350}), 
+              new Platform({x:1710, y:300}), 
+              new Platform({x:2410, y:250}), 
+              new Platform({x:3240, y:300}), 
+              new Platform({x:4000, y:350}), 
+              new Platform({x:4680, y:400}), 
+              new Platform({x:5480, y:350}), 
+              new Platform({x:6200, y:300}), 
+              new Platform({x:6980, y:250}), 
+              new Platform({x:7720, y:300})  
+       ]
+       animate()
+}
 
+platformImage.onerror = () => {
+       console.error('Image failed to load:', platformImage.src)
+}
 
 
 addEventListener('keydown',({keyCode})=>{
