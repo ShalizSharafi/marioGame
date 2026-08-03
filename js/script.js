@@ -18,19 +18,40 @@ class Player{
                      x:100,
                      y:100
               }
-              this.width=100
-              this.height=100
+              this.velocity={
+                     x:0,
+                     y:1
+              }
+              this.width=30
+              this.height=30
        }
 
        // defining the player
 
        draw(){
+              context.fillStyle='red'
               context.fillRect(this.position.x,this.position.y,this.width,this.height)
+       }
+
+       //changes our player's properties over time which separates what the player actually looks like with what we're actually updating over time
+       update(){
+              this.draw()
+              this.position.y += this.velocity.y
        }
 }
 //creating the player inside the canvas
 
-// using the class player
+//implementing and using the class player
 
 const player = new Player()
-player.draw()
+player.update()
+
+
+//making an animation loop to get the player moving
+function animate(){
+       requestAnimationFrame(animate) //changing the players properties over time
+       context.clearRect(0,0,canvas.width,canvas.height) // clear the canvas but allow us to draw after
+       player.update()
+}
+
+animate()
