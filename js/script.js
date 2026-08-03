@@ -5,6 +5,13 @@ const canvas = document.querySelector('canvas')
 const context = canvas.getContext('2d')
 const gravity = 1.5
 
+
+
+//tracking how far the player is moved how far the platform has scrolled on the screen
+let scrollOffset = 0
+
+
+
 //defining the keys i want to monitor
 const keys = {
        right:{
@@ -61,10 +68,12 @@ class Player{
 
 //creating the platforms which are going to be moving and scrolling so our player can jump on them and avoid pits of death
 class Platform{
-       constructor(){
+       constructor({x,y}){
               this.position = {
-                     x:200,
-                     y:100
+                     x:x,
+                     y:y
+                     //x
+                     //y
               }
 
               this.width = 200
@@ -88,7 +97,7 @@ class Platform{
 //implementing and using the class player
 
 const player = new Player()
-const platforms = [new Platform()]
+const platforms = [new Platform({x:200, y:100}),new Platform({x:500, y:200}),new Platform({x:700, y:300}),new Platform({x:800, y:50}),new Platform({x:1000, y:200}),new Platform({x:1300, y:500}),new Platform({x:1500, y:300}),new Platform({x:1800, y:100}),new Platform({x:1900, y:350}),new Platform({x:1950, y:100}),new Platform({x:2000, y:300})]
 
 //making an animation loop to get the player moving
 function animate(){
@@ -107,16 +116,22 @@ function animate(){
               player.velocity.x = 0
               //whemver we hit the edges, whenever we're inside the else statement
               if(keys.right.pressed){
+                     scrollOffset += 5
                      platforms.forEach((platform)=>{
                             platform.position.x -= 5
                      })
               }else if(keys.left.pressed){
+                     scrollOffset += 5
                     platforms.forEach((platform)=>{
                       platform.position.x += 5
                     })
               }
        }
 
+
+       if(scrollOffset <= 2100){
+              console.log('you win')
+       }
 
 
 
