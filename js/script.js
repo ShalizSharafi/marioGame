@@ -3,7 +3,7 @@ const canvas = document.querySelector('canvas')
 
 //game setup ++++++++++++_______((())()()(_(_(__(__(_()(_)))))))?????????////////////////////////////////////////////////////
 const context = canvas.getContext('2d')
-const gravity = 0.5
+const gravity = 1.5
 
 //defining the keys i want to monitor
 const keys = {
@@ -59,18 +59,43 @@ class Player{
 }
 //creating the player inside the canvas
 
+//creating the platforms which are going to be moving and scrolling so our player can jump on them and avoid pits of death
+class Platform{
+       constructor(){
+              this.position = {
+                     x:200,
+                     y:100
+              }
+
+              this.width = 200
+              this.height = 20
+       }
+
+
+       draw(){
+              context.fillStyle = 'blue'
+              context.fillRect(this.position.x,this.position.y,this.width,this.height)
+       }
+}
+//creating the platform class
+
+
+
+
+
+
+
 //implementing and using the class player
 
 const player = new Player()
-player.update()
-
+const platform = new Platform()
 
 //making an animation loop to get the player moving
 function animate(){
        requestAnimationFrame(animate) //changing the players properties over time
        context.clearRect(0,0,canvas.width,canvas.height) // clear the canvas but allow us to draw after
        player.update()
-
+       platform.draw()
 
        if(keys.right.pressed){
               player.velocity.x = 5
@@ -78,7 +103,17 @@ function animate(){
               player.velocity.x = -5
        }else player.velocity.x = 0
 
-     
+
+
+
+       //detect collision between the rectangular platfroms
+       //player's position + player'height, wheather the bottom of the player is less than the top of our platform //So condition 1  says the player is above the platform, condition 2 askes if the player falling down the platform, 3rd condition says once the player's off the platform it needs to fall down, so we're tracking the postion on the x axis. not that player.position.x gives the left edge of the player and player.position.x + player.width gives its left edge position. likewise with th eplatform. 
+
+       if(((player.position.y + player.height) <= (platform.position.y)) && ((player.position.y + player.height + player.velocity.y) >= platform.position.y) &&(player.position.x + player.width >= platform.position.x) &&(player.position.x <= platform.position.x + platform.width)){
+              player.velocity.y = 0
+       }
+
+
 }
 
 animate()
@@ -89,7 +124,7 @@ addEventListener('keydown',({keyCode})=>{
        console.log(keyCode)
        switch(keyCode){
               case 37 : console.log('left') ; keys.left.pressed = true; break;
-              case 38 : console.log('up'); player.velocity.y -= 20 ; break;
+              case 38 : console.log('up'); player.velocity.y -= 5 ; break;
               case 39 : console.log('right');keys.right.pressed = true;break;
               case 40 : console.log('down') ;break
        }
@@ -102,9 +137,10 @@ addEventListener('keyup',({keyCode})=>{
        console.log(keyCode)
        switch(keyCode){
               case 37 : console.log('left') ; keys.left.pressed = false;break;
-              case 38 : console.log('up'); player.velocity.y -= 20 ; break;
+              case 38 : console.log('up'); player.velocity.y -=5  ; break;
               case 39 : console.log('right');keys.right.pressed = false;break;
               case 40 : console.log('down') ;break
        }
        console.log(keys.right.pressed)
 })
+
