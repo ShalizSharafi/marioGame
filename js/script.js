@@ -88,20 +88,34 @@ class Platform{
 //implementing and using the class player
 
 const player = new Player()
-const platform = new Platform()
+const platforms = [new Platform()]
 
 //making an animation loop to get the player moving
 function animate(){
        requestAnimationFrame(animate) //changing the players properties over time
        context.clearRect(0,0,canvas.width,canvas.height) // clear the canvas but allow us to draw after
        player.update()
-       platform.draw()
+       platforms.forEach((platform)=>{
+              platform.draw()
+       })
 
-       if(keys.right.pressed){
+       if((keys.right.pressed ) && (player.position.x <= 400)){
               player.velocity.x = 5
-       }else if(keys.left.pressed){
+       }else if((keys.left.pressed) && (player.position.x > 100) ){
               player.velocity.x = -5
-       }else player.velocity.x = 0
+       }else {
+              player.velocity.x = 0
+              //whemver we hit the edges, whenever we're inside the else statement
+              if(keys.right.pressed){
+                     platforms.forEach((platform)=>{
+                            platform.position.x -= 5
+                     })
+              }else if(keys.left.pressed){
+                    platforms.forEach((platform)=>{
+                      platform.position.x += 5
+                    })
+              }
+       }
 
 
 
@@ -109,9 +123,11 @@ function animate(){
        //detect collision between the rectangular platfroms
        //player's position + player'height, wheather the bottom of the player is less than the top of our platform //So condition 1  says the player is above the platform, condition 2 askes if the player falling down the platform, 3rd condition says once the player's off the platform it needs to fall down, so we're tracking the postion on the x axis. not that player.position.x gives the left edge of the player and player.position.x + player.width gives its left edge position. likewise with th eplatform. 
 
-       if(((player.position.y + player.height) <= (platform.position.y)) && ((player.position.y + player.height + player.velocity.y) >= platform.position.y) &&(player.position.x + player.width >= platform.position.x) &&(player.position.x <= platform.position.x + platform.width)){
+     platforms.forEach((platform)=>{
+         if(((player.position.y + player.height) <= (platform.position.y)) && ((player.position.y + player.height + player.velocity.y) >= platform.position.y) &&(player.position.x + player.width >= platform.position.x) &&(player.position.x <= platform.position.x + platform.width)){
               player.velocity.y = 0
        }
+     })
 
 
 }
@@ -137,7 +153,7 @@ addEventListener('keyup',({keyCode})=>{
        console.log(keyCode)
        switch(keyCode){
               case 37 : console.log('left') ; keys.left.pressed = false;break;
-              case 38 : console.log('up'); player.velocity.y -=5  ; break;
+              case 38 : console.log('up'); player.velocity.y -=10  ; break;
               case 39 : console.log('right');keys.right.pressed = false;break;
               case 40 : console.log('down') ;break
        }
